@@ -29,7 +29,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.kylin.location.PhoneLocation;
+import android.suda.location.PhoneLocation;
 import android.suda.utils.SudaUtils;
 import android.net.Uri;
 import android.provider.Settings;
