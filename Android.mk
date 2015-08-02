@@ -3,7 +3,9 @@ LOCAL_PATH:= $(call my-dir)
 # Build the Telecom service.
 include $(CLEAR_VARS)
 
-LOCAL_JAVA_LIBRARIES := telephony-common libSudaLocation
+LOCAL_JAVA_LIBRARIES := telephony-common
+
+LOCAL_STATIC_JAVA_LIBRARIES = libSudaLocation
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
