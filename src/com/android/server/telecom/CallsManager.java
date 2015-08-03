@@ -239,7 +239,7 @@ public final class CallsManager extends Call.ListenerBase {
         Log.v(this, "onSuccessfulOutgoingCall, %s", call);
 
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(call.getNumber())) {
-            mPu.getNumberInfo(call.getNumber(), new CallBack() {
+            mPu.getNumberInfoOnline(call.getNumber(), new CallBack() {
                     public void execute(String response) {
                         call.setGeocodedLocation(response);
                         onSuccessfulOutgoingCallRewrite(call, callState);
@@ -279,7 +279,7 @@ public final class CallsManager extends Call.ListenerBase {
         Log.d(this, "onSuccessfulIncomingCall");
 
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(incomingCall.getNumber())) {
-            mPu.getNumberInfo(incomingCall.getNumber(), new CallBack() {
+            mPu.getNumberInfoOnline(incomingCall.getNumber(), new CallBack() {
                     public void execute(String response) {
                         incomingCall.setGeocodedLocation(response);
                         onSuccessfulIncomingCallRewrite(incomingCall);
