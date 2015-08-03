@@ -39,12 +39,17 @@ import android.telecom.TelecomManager;
 import android.telecom.VideoProfile;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import com.android.internal.telephony.CallStateException;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyProperties;
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.internal.util.IndentingPrintWriter;
+
+import com.a1os.cloud.phone.PhoneUtil;
+import com.a1os.cloud.phone.PhoneUtil.CallBack;
+import android.suda.utils.SudaUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -106,6 +111,8 @@ public final class CallsManager extends Call.ListenerBase {
 
     private static final int[] LIVE_CALL_STATES =
             {CallState.CONNECTING, CallState.PRE_DIAL_WAIT, CallState.DIALING, CallState.ACTIVE};
+
+    private static PhoneUtil mPu;
 
     /**
      * The main call repository. Keeps an instance of all live calls. New incoming and outgoing
@@ -209,6 +216,7 @@ public final class CallsManager extends Call.ListenerBase {
                 context);
         mInCallWakeLockController = new InCallWakeLockController(context, this);
         mCallInfoProvider = callInfoProvider;
+        mPu = new PhoneUtil(context);
 
         mListeners.add(statusBarNotifier);
         mListeners.add(mCallLogManager);
@@ -227,9 +235,23 @@ public final class CallsManager extends Call.ListenerBase {
     }
 
     @Override
-    public void onSuccessfulOutgoingCall(Call call, int callState) {
+    public void onSuccessfulOutgoingCall(final Call call, final int callState) {
         Log.v(this, "onSuccessfulOutgoingCall, %s", call);
 
+        if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(call.getNumber())) {
+            mPu.getNumberInfo(call.getNumber(), new CallBack() {
+                    public void execute(String response) {
+                        call.setGeocodedLocation(response);
+                        onSuccessfulOutgoingCallRewrite(call, callState);
+                    }
+                }
+            );
+        } else {
+            onSuccessfulOutgoingCallRewrite(call, callState);
+        }
+    }
+
+    public void onSuccessfulOutgoingCallRewrite(Call call, int callState) {
         setCallState(call, callState);
         if (!mCalls.contains(call)) {
             // Call was not added previously in startOutgoingCall due to it being a potential MMI
@@ -253,9 +275,23 @@ public final class CallsManager extends Call.ListenerBase {
     }
 
     @Override
-    public void onSuccessfulIncomingCall(Call incomingCall) {
+    public void onSuccessfulIncomingCall(final Call incomingCall) {
         Log.d(this, "onSuccessfulIncomingCall");
 
+        if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(incomingCall.getNumber())) {
+            mPu.getNumberInfo(incomingCall.getNumber(), new CallBack() {
+                    public void execute(String response) {
+                        incomingCall.setGeocodedLocation(response);
+                        onSuccessfulIncomingCallRewrite(incomingCall);
+                    }
+                }
+            );
+        } else {
+            onSuccessfulIncomingCallRewrite(incomingCall);
+        }
+    }
+
+    public void onSuccessfulIncomingCallRewrite(Call incomingCall) {
         if (isCallBlacklisted(incomingCall)) {
             mCallLogManager.logCall(incomingCall, Calls.BLACKLIST_TYPE);
             incomingCall.setDisconnectCause(

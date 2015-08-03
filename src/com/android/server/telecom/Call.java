@@ -236,6 +236,9 @@ final class Call implements CreateConnectionResponse {
     /** The caller display name (CNAP) set by the connection service. */
     private String mCallerDisplayName;
 
+    /** The caller phone number location set by the cloud or offline engine. */
+    private String mCallerLocation;
+
     /**
      * The presentation requirements for the handle. See {@link TelecomManager} for valid values.
      */
@@ -698,6 +701,14 @@ final class Call implements CreateConnectionResponse {
 
     void setCreationTimeMillis(long time) {
         mCreationTimeMillis = time;
+    }
+
+    void setGeocodedLocation(String location) {
+        mCallerLocation = location;
+    }
+
+    String getGeocodedLocation() {
+        return mCallerLocation;
     }
 
     long getConnectTimeMillis() {
