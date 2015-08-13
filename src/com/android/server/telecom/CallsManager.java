@@ -241,8 +241,10 @@ public final class CallsManager extends Call.ListenerBase {
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(call.getNumber())) {
             mPu.getNumberInfoOnline(call.getNumber(), new CallBack() {
                     public void execute(String response) {
-                        call.setGeocodedLocation(response);
-                        onSuccessfulOutgoingCallRewrite(call, callState);
+                        if (call.getState() == CallState.CONNECTING || call.getState() == CallState.PRE_DIAL_WAIT) {
+                            call.setGeocodedLocation(response);
+                            onSuccessfulOutgoingCallRewrite(call, callState);
+                        }
                     }
                 }
             );
@@ -281,8 +283,10 @@ public final class CallsManager extends Call.ListenerBase {
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(incomingCall.getNumber())) {
             mPu.getNumberInfoOnline(incomingCall.getNumber(), new CallBack() {
                     public void execute(String response) {
-                        incomingCall.setGeocodedLocation(response);
-                        onSuccessfulIncomingCallRewrite(incomingCall);
+                        if (incomingCall.getState() == CallState.NEW) {
+                            incomingCall.setGeocodedLocation(response);
+                            onSuccessfulIncomingCallRewrite(incomingCall);
+                        }
                     }
                 }
             );
