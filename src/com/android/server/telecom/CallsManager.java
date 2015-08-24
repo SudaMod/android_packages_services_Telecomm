@@ -216,7 +216,7 @@ public final class CallsManager extends Call.ListenerBase {
                 context);
         mInCallWakeLockController = new InCallWakeLockController(context, this);
         mCallInfoProvider = callInfoProvider;
-        mPu = new PhoneUtil(context);
+        mPu = PhoneUtil.getPhoneUtil(context);
 
         mListeners.add(statusBarNotifier);
         mListeners.add(mCallLogManager);
@@ -239,7 +239,7 @@ public final class CallsManager extends Call.ListenerBase {
         Log.v(this, "onSuccessfulOutgoingCall, %s", call);
 
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(call.getNumber())) {
-            mPu.getNumberInfoOnline(call.getNumber(), new CallBack() {
+            mPu.getOnlineNumberInfo(call.getNumber(), new CallBack() {
                     public void execute(String response) {
                         if (call.getState() == CallState.CONNECTING || call.getState() == CallState.PRE_DIAL_WAIT) {
                             call.setGeocodedLocation(response);
@@ -281,7 +281,7 @@ public final class CallsManager extends Call.ListenerBase {
         Log.d(this, "onSuccessfulIncomingCall");
 
         if (SudaUtils.isSupportLanguage(true) && !TextUtils.isEmpty(incomingCall.getNumber())) {
-            mPu.getNumberInfoOnline(incomingCall.getNumber(), new CallBack() {
+            mPu.getOnlineNumberInfo(incomingCall.getNumber(), new CallBack() {
                     public void execute(String response) {
                         if (incomingCall.getState() == CallState.NEW) {
                             incomingCall.setGeocodedLocation(response);
