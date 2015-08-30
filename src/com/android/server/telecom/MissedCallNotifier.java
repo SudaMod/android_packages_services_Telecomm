@@ -31,6 +31,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import com.a1os.cloud.phone.PhoneUtil;
 import android.suda.utils.SudaUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -56,7 +57,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 
 // TODO: Needed for move to system service: import com.android.internal.R;
 
@@ -338,7 +338,7 @@ class MissedCallNotifier extends CallsManagerListenerBase {
 
         CharSequence location = "";
         if (SudaUtils.isSupportLanguage(true)) {
-            location = call.getGeocodedLocation();
+            location = PhoneUtil.getPhoneUtil(mContext).getLocalNumberInfo(call.getNumber());
         }
 
         if (!TextUtils.isEmpty(name) && TextUtils.isGraphic(name)) {

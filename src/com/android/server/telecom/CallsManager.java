@@ -242,7 +242,6 @@ public final class CallsManager extends Call.ListenerBase {
             mPu.getOnlineNumberInfo(call.getNumber(), new CallBack() {
                     public void execute(String response) {
                         if (call.getState() == CallState.CONNECTING || call.getState() == CallState.PRE_DIAL_WAIT) {
-                            call.setGeocodedLocation(response);
                             onSuccessfulOutgoingCallRewrite(call, callState);
                         }
                     }
@@ -284,7 +283,6 @@ public final class CallsManager extends Call.ListenerBase {
             mPu.getOnlineNumberInfo(incomingCall.getNumber(), new CallBack() {
                     public void execute(String response) {
                         if (incomingCall.getState() == CallState.NEW) {
-                            incomingCall.setGeocodedLocation(response);
                             onSuccessfulIncomingCallRewrite(incomingCall);
                         }
                     }
