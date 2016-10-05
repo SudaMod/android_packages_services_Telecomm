@@ -54,8 +54,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.suda.location.PhoneLocation;
-import android.suda.utils.SudaUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -79,6 +77,10 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.sudamod.sdk.phonelocation.PhoneUtil;
+import android.suda.utils.SudaUtils;
+
 
 // TODO: Needed for move to system service: import com.android.internal.R;
 
@@ -440,11 +442,6 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
         String handle = call.getHandle() == null ? null : call.getHandle().getSchemeSpecificPart();
         String name = call.getName();
 
-        String location = "";
-        if (SudaUtils.isSupportLanguage(true)) {
-            location = PhoneLocation.getCityFromPhone(call.getNumber());
-        }
-
         if (!TextUtils.isEmpty(handle)) {
             String formattedNumber = PhoneNumberUtils.formatNumber(handle,
                     getCurrentCountryIso(mContext));
@@ -455,6 +452,11 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
             if (!TextUtils.isEmpty(formattedNumber)) {
                 handle = formattedNumber;
             }
+        }
+
+        CharSequence location = "";
+        if (SudaUtils.isSupportLanguage(true)) {
+            location = PhoneUtil.getPhoneUtil(mContext).getLocalNumberInfo(call.getNumber());
         }
 
         if (!TextUtils.isEmpty(name) && TextUtils.isGraphic(name)) {
