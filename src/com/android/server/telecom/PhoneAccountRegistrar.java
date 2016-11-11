@@ -260,6 +260,10 @@ public class PhoneAccountRegistrar {
         for (int i = 0; i < mState.accounts.size(); i++) {
             String id = mState.accounts.get(i).getAccountHandle().getId();
 
+            if (id == null || id.equals("null") || TextUtils.isEmpty(id)) {
+                continue;
+            }
+
             // emergency account present return it
             if (id.equals("E")) {
                 Log.i(this, "getUserSelVoicePhoneAccount, emergency account ");
@@ -1528,7 +1532,7 @@ public class PhoneAccountRegistrar {
                         int outerDepth = parser.getDepth();
                         PhoneAccountHandle accountHandle = null;
                         String userSerialNumberString = null;
-                        String groupId = "";
+                        String groupId = null;
                         while (XmlUtils.nextElementWithin(parser, outerDepth)) {
                             if (parser.getName().equals(ACCOUNT_HANDLE)) {
                                 parser.nextTag();
@@ -1553,9 +1557,9 @@ public class PhoneAccountRegistrar {
                                         "Could not parse UserHandle " + userSerialNumberString);
                             }
                         }
-                        if (accountHandle != null && userHandle != null && groupId != null) {
+                        if (accountHandle != null && userHandle != null) {
                             return new DefaultPhoneAccountHandle(userHandle, accountHandle,
-                                    groupId);
+                                    groupId != null ? groupId : "");
                         }
                     }
                     return null;
