@@ -10,8 +10,6 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-proto-files-under, proto)
 LOCAL_STATIC_JAVA_LIBRARIES += libSudaSdk
-LOCAL_STATIC_JAVA_LIBRARIES += libOkHttp
-LOCAL_STATIC_JAVA_LIBRARIES += libOKIO
 
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
